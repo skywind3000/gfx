@@ -24,10 +24,8 @@ NAMESPACE_BEGIN(Core);
 //---------------------------------------------------------------------
 struct Matrix2
 {
-	union
-	{
-		struct 
-		{
+	union {
+		struct {
 			float m00, m01;
 			float m10, m11;
 		};
@@ -149,10 +147,8 @@ struct Matrix2
 //---------------------------------------------------------------------
 struct Matrix3
 {
-	union
-	{
-		struct
-		{
+	union {
+		struct {
 			float m00, m01, m02;
 			float m10, m11, m12;
 			float m20, m21, m22;
@@ -294,10 +290,8 @@ struct Matrix3
 //---------------------------------------------------------------------
 struct Matrix4
 {
-	union
-	{
-		struct 
-		{
+	union {
+		struct {
 			float m00, m01, m02, m03;
 			float m10, m11, m12, m13;
 			float m20, m21, m22, m23;
