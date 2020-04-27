@@ -26,18 +26,18 @@ int Image::FormatToBpp(PixelFormat fmt)
 	case FMT_A8R8G8B8:
 	case FMT_A8B8G8R8:
 	case FMT_X8R8G8B8:
-		return 4;
+		return 32;
 	case FMT_R8G8B8:
 	case FMT_B8G8R8:
-		return 3;
+		return 24;
 	case FMT_A1R5G5B5:
 	case FMT_A4R4G4B4:
 	case FMT_R5G6B5:
-		return 2;
+		return 16;
 	case FMT_G8:
-		return 1;
+		return 8;
 	}
-	return 4;
+	return 32;
 }
 
 
@@ -47,6 +47,7 @@ int Image::FormatToBpp(PixelFormat fmt)
 Image::Image(int w, int h, PixelFormat fmt)
 {
 	m_bpp = FormatToBpp(fmt);
+	m_fmt = fmt;
 	m_psize = m_bpp / 8;
 	m_pitch = (m_psize * w + 3) & ~3;
 	m_width = w;

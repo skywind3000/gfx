@@ -21,6 +21,12 @@ VideoDriver::VideoDriver()
 {
 	m_initialized = false;
 	m_background_color.color = 0xff191970;
+	m_video_capacity.texture_size_pow2 = true;
+	m_video_capacity.texture_square_only = true;
+	m_video_capacity.texture_has_alpha = false;
+	m_video_capacity.texture_has_mipmap = false;
+	m_video_capacity.texture_max_width = 0;
+	m_video_capacity.texture_max_height = 0;
 }
 
 
@@ -47,6 +53,18 @@ int VideoDriver::Create(const CreationParameter *params)
 int VideoDriver::Release()
 {
 	return -1;
+}
+
+
+//---------------------------------------------------------------------
+// Setup size
+//---------------------------------------------------------------------
+void VideoDriver::InitSize(int width, int height)
+{
+	m_video_width = width;
+	m_video_height = height;
+	m_inv_width = (width == 0)? 0.0f : 1.0f / ((float)width);
+	m_inv_height = (height == 0)? 0.0f : 1.0f / ((float)height);
 }
 
 
@@ -101,6 +119,27 @@ bool VideoDriver::Present()
 bool VideoDriver::CheckReset()
 {
 	return false;
+}
+
+
+//---------------------------------------------------------------------
+// calculate texture size
+//---------------------------------------------------------------------
+bool VideoDriver::TextureFit(int w, int h, PixelFormat fmt, int *tw, int *th)
+{
+	int neww = w;
+	int newh = h;
+	if (m_video_capacity.texture_size_pow2) {
+		for (neww = 4; neww < w; neww *= 2);
+		for (newh = 4; newh < h; newh *= 2);
+	}
+	if (m_video_capacity.texture_square_only) {
+		int maxs = (neww > newh)? neww : newh;
+		neww = newh = maxs;
+	}
+	*tw = neww;
+	*th = newh;
+	return true;
 }
 
 

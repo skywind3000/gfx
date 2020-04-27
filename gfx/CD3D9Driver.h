@@ -21,6 +21,7 @@
 
 #include "GFX.h"
 #include "GFXDriver.h"
+#include "GFXMatrix.h"
 
 
 //---------------------------------------------------------------------
@@ -44,6 +45,7 @@ public:
 
 	virtual int Release();
 
+// VideoDriver interfaces
 public:
 
 	virtual bool Clear(bool target = true, bool zBuffer = true, bool stencil = true);
@@ -54,9 +56,14 @@ public:
 
 	virtual bool CheckReset();
 
+// d3d9 specific interfaces
 public:
+
 	IDirect3DDevice9* GetDevice() { return m_device; }
 	const IDirect3DDevice9* GetDevice() const { return m_device; }
+
+	HRESULT SetTransform(D3DTRANSFORMSTATETYPE state, const D3DMATRIX *pMatrix);
+	HRESULT SetTransform(D3DTRANSFORMSTATETYPE state, const Core::Matrix4& matrix);
 
 protected:
 

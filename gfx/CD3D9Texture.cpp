@@ -6,6 +6,7 @@
 //
 //=====================================================================
 #include "CD3D9Texture.h"
+#include "GFXWin32.h"
 
 
 //---------------------------------------------------------------------
@@ -54,13 +55,10 @@ D3DFORMAT CD3D9Texture::GetD3DFormat(PixelFormat fmt)
 //---------------------------------------------------------------------
 // ctor
 //---------------------------------------------------------------------
-CD3D9Texture::CD3D9Texture(IDirect3DDevice9 *device, int w, int h, PixelFormat fmt, int flag, int mipmap):
-	Texture(w, h, fmt)
+CD3D9Texture::CD3D9Texture()
 {
-	int hr = CreateTexture(device, w, h, fmt, flag, mipmap);
-	if (hr != 0) {
-		m_texture = NULL;
-	}
+	m_texture = NULL;
+	m_device = NULL;
 }
 
 
@@ -68,6 +66,15 @@ CD3D9Texture::CD3D9Texture(IDirect3DDevice9 *device, int w, int h, PixelFormat f
 // dtor
 //---------------------------------------------------------------------
 CD3D9Texture::~CD3D9Texture()
+{
+	Release();
+}
+
+
+//---------------------------------------------------------------------
+// release
+//---------------------------------------------------------------------
+int CD3D9Texture::Release()
 {
 	if (m_texture) {
 		m_texture->Release();
@@ -77,20 +84,46 @@ CD3D9Texture::~CD3D9Texture()
 			m_device = NULL;
 		}
 	}
+	return 0;
 }
 
 
 //---------------------------------------------------------------------
-// initialize
+// create with parameters
 //---------------------------------------------------------------------
-CD3D9Texture::CD3D9Texture(IDirect3DDevice9 *device, const Image *image, int flag, int mipmap):
-	Texture(image->GetWidth(), image->GetHeight(), image->GetFormat())
+int CD3D9Texture::Create(CD3D9Driver *drv, int w, int h, PixelFormat fmt, int flag, int mipmap)
 {
-	int hr = CreateTexture(device, image->GetWidth(), image->GetHeight(), 
+	Release();
+	int hr = CreateTexture(drv->GetDevice(), w, h, fmt, flag, mipmap);
+	return hr;
+}
+
+
+//---------------------------------------------------------------------
+// create with parameters
+//---------------------------------------------------------------------
+int CD3D9Texture::Create(CD3D9Driver *drv, const Image *image, int flag, int mipmap)
+{
+	Release();
+	int hr = CreateTexture(drv->GetDevice(), image->GetWidth(), image->GetHeight(),
 			image->GetFormat(), flag, mipmap);
 	if (hr == 0) {
 		this->RestoreFromImage(image);
 	}
+	return hr;
+}
+
+
+//---------------------------------------------------------------------
+// 
+//---------------------------------------------------------------------
+int CD3D9Texture::Create(CD3D9Driver *drv, const char *filename, int flag, int mipmap)
+{
+	GFX::Image *img = Win32::GdiPlus_LoadFile(filename);
+	if (img == NULL) return -1;
+	int hr = Create(drv, img, flag, mipmap);
+	delete img;
+	return hr;
 }
 
 
@@ -105,6 +138,7 @@ int CD3D9Texture::CreateTexture(IDirect3DDevice9 *device, int w, int h,
 	m_texture = NULL;
 	HRESULT hr = device->CreateTexture(w, h, mipmap, usage, d3d_fmt, D3DPOOL_MANAGED, &m_texture, NULL);
 	if (SUCCEEDED(hr)) {
+		InitParameter(w, h, fmt);
 		device->AddRef();
 		m_device = device;
 	}

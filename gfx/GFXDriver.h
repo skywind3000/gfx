@@ -10,6 +10,7 @@
 
 #include "GFX.h"
 #include "GFXColor.h"
+#include "GFXImage.h"
 
 #include <functional>
 
@@ -74,6 +75,9 @@ public:
 
 	virtual void SetColor(Core::Color color);
 
+	// fit texture size
+	virtual bool TextureFit(int w, int h, PixelFormat fmt, int *tw, int *th);
+
 public:
 	inline bool IsTextureSquareOnly() const { return m_video_capacity.texture_square_only; }
 	inline bool IsTextureHasAlpha() const { return m_video_capacity.texture_has_alpha; }
@@ -84,9 +88,15 @@ public:
 
 	inline int GetWidth() const { return m_video_width; }
 	inline int GetHeight() const { return m_video_height; }
+	inline float GetInvWidth() const { return m_inv_width; }
+	inline float GetInvHeight() const { return m_inv_height; }
 
 public:
-	std::function<void()> OnReset = NULL;
+	std::function<void()> OnPreReset = NULL;
+	std::function<void()> OnPostReset = NULL;
+
+protected:
+	void InitSize(int width, int height);
 
 protected:
 	CreationParameter m_creation_parameter;
@@ -94,6 +104,8 @@ protected:
 	Core::Color m_background_color;
 	int m_video_width;
 	int m_video_height;
+	float m_inv_width;
+	float m_inv_height;
 	bool m_initialized;
 };
 

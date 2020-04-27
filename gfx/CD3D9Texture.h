@@ -26,13 +26,19 @@ class CD3D9Texture : public Texture
 {
 public:
 	virtual ~CD3D9Texture();
-	CD3D9Texture(IDirect3DDevice9 *device, int w, int h, PixelFormat fmt, int flag, int mipmap = 1);
-	CD3D9Texture(IDirect3DDevice9 *device, const Image *image, int flag, int mipmap = 1);
+	CD3D9Texture();
 
 public:
 
+	virtual int Create(CD3D9Driver *drv, int w, int h, PixelFormat fmt, int flag, int mipmap);
+	virtual int Create(CD3D9Driver *drv, const Image *image, int flag, int mipmap = 1);
+	virtual int Create(CD3D9Driver *drv, const char *filename, int flag, int mipmap = 1);
+	virtual int Release();
+
 	virtual void *Lock(bool readOnly = false);
 	virtual void Unlock();
+
+	inline bool Available() const { return m_texture? true : false; }
 
 	inline IDirect3DTexture9 *GetD3DTexture() { return m_texture; }
 

@@ -159,65 +159,13 @@ void Transform::SetMvp(const Matrix4 *matrix)
 }
 
 
-//---------------------------------------------------------------------
-// push stack
-//---------------------------------------------------------------------
-void Transform::Push(TransformState state)
-{
-	switch (state) {
-	case TS_WORLD:
-		m_stack_world.push_back(m_world);	
-		break;
-	case TS_VIEW:
-		m_stack_view.push_back(m_view);
-		break;
-	case TS_PROJECTION:
-		m_stack_projection.push_back(m_projection);
-		break;
-	}
-}
-
-
-//---------------------------------------------------------------------
-// pop stack
-//---------------------------------------------------------------------
-bool Transform::Pop(TransformState state)
-{
-	switch (state) {
-	case TS_WORLD:
-		if (m_stack_world.size() == 0) 
-			return false;
-		m_world = m_stack_world.back();
-		m_stack_world.pop_back();
-		break;
-	case TS_VIEW:
-		if (m_stack_view.size() == 0) 
-			return false;
-		m_view = m_stack_view.back();
-		m_stack_view.pop_back();
-		break;
-	case TS_PROJECTION:
-		if (m_stack_projection.size() == 0) 
-			return false;
-		m_projection = m_stack_projection.back();
-		m_stack_projection.pop_back();
-		break;
-	}
-	m_dirty = true;
-	return true;
-}
-
 
 //=====================================================================
-// 
+// matrix utils
 //=====================================================================
 
 void Matrix4_SetIdentity(Matrix4& m) {
-	m.m[0][0] = m.m[1][1] = m.m[2][2] = m.m[3][3] = 1.0f; 
-	m.m[0][1] = m.m[0][2] = m.m[0][3] = 0.0f;
-	m.m[1][0] = m.m[1][2] = m.m[1][3] = 0.0f;
-	m.m[2][0] = m.m[2][1] = m.m[2][3] = 0.0f;
-	m.m[3][0] = m.m[3][1] = m.m[3][2] = 0.0f;
+	m = Matrix4Unit;
 }
 
 void Matrix4_SetZero(Matrix4& m) {
@@ -301,7 +249,20 @@ void Matrix4_SetPerspective(Matrix4& m, float fovy, float aspect, float zn, floa
 	m.m[1][1] = (float)(fax);
 	m.m[2][2] = zf / (zf - zn);
 	m.m[3][2] = - zn * zf / (zf - zn);
-	m.m[2][3] = 1;
+	m.m[2][3] = 1.0f;
+}
+
+// D3DXMatrixOrthoOffCenterLH
+void Matrix4_SetOrtho2D(Matrix4& m, float l, float r, float b, float t, float zn, float zf)
+{
+	Matrix4_SetZero(m);
+	m.m[0][0] = 2.0f / (r - l);
+	m.m[1][1] = 2.0f / (t - b);
+	m.m[2][2] = 1.0f / (zf - zn);
+	m.m[3][3] = 1.0f;
+	m.m[3][0] = (l + r) / (l - r);
+	m.m[3][1] = (t + b) / (b - t);
+	m.m[3][2] = zn / (zn - zf);
 }
 
 

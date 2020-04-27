@@ -441,6 +441,8 @@ GFX::Image* GdiPlus_LoadImage(const void *data, long size, int *errcode)
 		return NULL;
 	}
 
+	// printf("pfmt=%d\n", pfmt);
+
 	switch (pfmt) {
 	case 8: fmt = FMT_G8; break;
 	case 555: fmt = FMT_A1R5G5B5; break;
@@ -451,6 +453,8 @@ GFX::Image* GdiPlus_LoadImage(const void *data, long size, int *errcode)
 		notfind = 1;
 		break;
 	}
+
+	// printf("fmt=%d\n", (int)fmt);
 
 	if (notfind) {
 		if (errcode) errcode[0] = -20;
@@ -473,6 +477,8 @@ GFX::Image* GdiPlus_LoadImage(const void *data, long size, int *errcode)
 	}
 
 	free(bits);
+
+	// printf("image: fmt=%d bpp=%d\n", (int)img->GetFormat(), img->GetBpp());
 
 	return img;
 }

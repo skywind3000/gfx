@@ -17,6 +17,8 @@
 //---------------------------------------------------------------------
 NAMESPACE_BEGIN(GFX);
 
+class VideoDriver;
+
 
 //---------------------------------------------------------------------
 // Texture
@@ -25,12 +27,17 @@ class Texture
 {
 public:
 	virtual ~Texture();
-	Texture(int width, int height, PixelFormat format);
+	Texture();
 
 public:
 
+	void InitParameter(int w, int h, PixelFormat fmt);
+
 	virtual void *Lock(bool readOnly = false);
 	virtual void Unlock();
+
+	virtual int PreReset();
+	virtual int PostReset();
 
 	virtual void CopyTo(int x, int y, Image *src, int sx, int sy, int sw, int sh);
 	virtual void CopyFrom(int x, int y, const Image *src, int sx, int sy, int sw, int sh);
@@ -39,11 +46,16 @@ public:
 	virtual void SaveToImage(Image *img);
 	virtual void RestoreFromImage(const Image *img);
 
+	inline virtual bool Available() const { return false; }
+
 	inline int GetWidth() const { return m_width; }
 	inline int GetHeight() const { return m_height; }
 	inline PixelFormat GetFormat() const { return m_format; }
 	inline int32_t GetPitch() const { return m_pitch; }
 	inline int GetBpp() const { return m_bpp; }
+	
+	inline float GetInvWidth() const { return m_inv_width; }
+	inline float GetInvHeight() const { return m_inv_height; }
 
 	inline void* GetBits() { return m_bits; }
 	inline const void* GetBits() const { return m_bits; }
@@ -51,6 +63,8 @@ public:
 protected:
 	int m_width;
 	int m_height;
+	float m_inv_width;
+	float m_inv_height;
 	int32_t m_pitch;
 	void *m_bits;
 	int m_bpp;

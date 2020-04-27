@@ -16,13 +16,9 @@ NAMESPACE_BEGIN(GFX);
 //---------------------------------------------------------------------
 // ctor
 //---------------------------------------------------------------------
-Texture::Texture(int width, int height, PixelFormat format)
+Texture::Texture()
 {
-	m_width = width;
-	m_height = height;
-	m_format = format;
-	m_pitch = 0;
-	m_bpp = Image::FormatToBpp(format);
+	InitParameter(0, 0, FMT_A8R8G8B8);
 }
 
 
@@ -32,6 +28,21 @@ Texture::Texture(int width, int height, PixelFormat format)
 //---------------------------------------------------------------------
 Texture::~Texture()
 {
+}
+
+
+//---------------------------------------------------------------------
+// init parameters
+//---------------------------------------------------------------------
+void Texture::InitParameter(int w, int h, PixelFormat fmt)
+{
+	m_width = w;
+	m_height = h;
+	m_format = fmt;
+	m_pitch = 0;
+	m_bpp = Image::FormatToBpp(fmt);
+	m_inv_width = (w == 0)? 0.0f : 1.0f / ((float)w);
+	m_inv_height = (h == 0)? 0.0f : 1.0f / ((float)h);
 }
 
 
@@ -49,6 +60,24 @@ void* Texture::Lock(bool readOnly)
 //---------------------------------------------------------------------
 void Texture::Unlock()
 {
+}
+
+
+//---------------------------------------------------------------------
+// 
+//---------------------------------------------------------------------
+int Texture::PreReset()
+{
+	return 0;
+}
+
+
+//---------------------------------------------------------------------
+// 
+//---------------------------------------------------------------------
+int Texture::PostReset()
+{
+	return 0;
 }
 
 

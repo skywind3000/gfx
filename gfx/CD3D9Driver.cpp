@@ -5,6 +5,7 @@
 // Last Modified: 2020/04/27 00:11:50
 //
 //=====================================================================
+#include "GFXTransform.h"
 #include "CD3D9Driver.h"
 
 
@@ -274,8 +275,7 @@ int CD3D9Driver::SetDevice(IDirect3DDevice9 *device)
 //---------------------------------------------------------------------
 bool CD3D9Driver::GetDeviceInfo()
 {
-	m_video_width = m_params.BackBufferWidth;
-	m_video_height = m_params.BackBufferHeight;
+	InitSize(m_params.BackBufferWidth, m_params.BackBufferHeight);
 
 	m_video_capacity.texture_size_pow2 = false;
 	m_video_capacity.texture_square_only = false;
@@ -393,12 +393,34 @@ bool CD3D9Driver::CheckReset()
 		fprintf(stderr, "d3d9 device internal error\n");
 		exit(1);
 	}
+	if (OnPreReset) OnPreReset();
 	hr = m_device->Reset(&m_params);
 	if (FAILED(hr)) {
 		return false;
 	}
-	if (OnReset) OnReset();
+	if (OnPostReset) OnPostReset();
 	return true;
+}
+
+
+//---------------------------------------------------------------------
+// Easy Set Transform
+//---------------------------------------------------------------------
+HRESULT CD3D9Driver::SetTransform(D3DTRANSFORMSTATETYPE state, const D3DMATRIX *pMatrix)
+{
+	if (pMatrix == NULL) {
+		pMatrix = (const D3DMATRIX*)(&Core::Matrix4Unit);
+	}
+	return m_device->SetTransform(state, pMatrix);
+}
+
+
+//---------------------------------------------------------------------
+// Easy Set Transform
+//---------------------------------------------------------------------
+HRESULT CD3D9Driver::SetTransform(D3DTRANSFORMSTATETYPE state, const Core::Matrix4& matrix)
+{
+	return SetTransform(state, (const D3DMATRIX*)&matrix);
 }
 
 

@@ -63,20 +63,12 @@ public:
 
 	void SetMvp(const Matrix4 *matrix);
 
-	void Push(TransformState state);
-
-	bool Pop(TransformState state);
-
-
 protected:
 	bool m_opengl;
 	bool m_dirty;
 	bool m_update;
 
 protected:
-	std::vector<Matrix4> m_stack_world;
-	std::vector<Matrix4> m_stack_view;
-	std::vector<Matrix4> m_stack_projection;
 	Matrix4 m_world;
 	Matrix4 m_view;
 	Matrix4 m_projection;
@@ -102,6 +94,9 @@ void Matrix4_LookAt(Matrix4& m, const Vector4& eye, const Vector4& at, const Vec
 
 // D3DXMatrixPerspectiveFovLH
 void Matrix4_SetPerspective(Matrix4& m, float fovy, float aspect, float zn, float zf);
+
+// D3DXMatrixOrthoOffCenterLH
+void Matrix4_SetOrtho2D(Matrix4& m, float l, float r, float b, float t, float zn, float zf);
 
 
 //---------------------------------------------------------------------
