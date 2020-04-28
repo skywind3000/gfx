@@ -68,6 +68,8 @@ public:
 	D3DFORMAT FormatMap(PixelFormat pfmt);
 	PixelFormat FormatMap(D3DFORMAT fmt);
 
+	HRESULT SetRenderTarget(DWORD RenderTargetIndex, IDirect3DSurface9 *pRenderTarget);
+
 protected:
 
 	static int CreateInterfaceD3D9(IDirect3D9** d3d9);

@@ -558,8 +558,37 @@ HRESULT CD3D9Driver::SetTransform(D3DTRANSFORMSTATETYPE state, const Core::Matri
 
 
 //---------------------------------------------------------------------
+// setup render target
+//---------------------------------------------------------------------
+HRESULT CD3D9Driver::SetRenderTarget(DWORD RenderTargetIndex, IDirect3DSurface9 *pRenderTarget)
+{
+	if (m_device == NULL) {
+		return D3DERR_DEVICEREMOVED;
+	}
+
+	HRESULT hr = m_device->SetRenderTarget(RenderTargetIndex, pRenderTarget);
+
+	if (SUCCEEDED(hr)) {
+		if (pRenderTarget) {
+			D3DSURFACE_DESC desc;
+			HRESULT rr = pRenderTarget->GetDesc(&desc);
+			if (SUCCEEDED(rr)) {
+				InitSize((int)desc.Width, (int)desc.Height);
+			}
+		}
+	}
+
+	return hr;
+}
+
+
+
+//---------------------------------------------------------------------
 // Namespace End
 //---------------------------------------------------------------------
 NAMESPACE_END(GFX);
+
+
+
 
 
