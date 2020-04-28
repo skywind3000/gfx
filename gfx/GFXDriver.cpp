@@ -123,6 +123,72 @@ bool VideoDriver::CheckReset()
 
 
 //---------------------------------------------------------------------
+// enable format
+//---------------------------------------------------------------------
+void VideoDriver::AddDeviceFormat(PixelFormat fmt, ResourceType rt)
+{
+	int index = (int)fmt;
+	if (index >= (int)m_support_formats.size()) {
+		int pos = (int)m_support_formats.size();
+		m_support_formats.resize(index + 1);
+		for (int i = pos; i <= index; i++) {
+			m_support_formats[i].texture = false;
+			m_support_formats[i].display = false;
+			m_support_formats[i].buffer = false;
+			m_support_formats[i].index = false;
+			m_support_formats[i].framebuffer = false;
+		}
+	}
+	switch (rt) {
+	case GRT_TEXTURE:
+		m_support_formats[index].texture = true;
+		break;
+	case GRT_FRAME_BUFFER:
+		m_support_formats[index].framebuffer = true;
+		break;
+	case GRT_VERTEX_BUFFER:
+		m_support_formats[index].buffer = true;
+		break;
+	case GRT_INDEX_BUFFER:
+		m_support_formats[index].index = true;
+		break;
+	case GRT_DISPLAY:
+		m_support_formats[index].display = true;
+		break;
+	default:
+		break;
+	}
+}
+
+
+//---------------------------------------------------------------------
+// check format
+//---------------------------------------------------------------------
+bool VideoDriver::CheckDeviceFormat(PixelFormat fmt, ResourceType rt)
+{
+	int index = (int)fmt;
+	if (index >= (int)m_support_formats.size()) {
+		return false;
+	}
+	switch (rt) {
+	case GRT_TEXTURE:
+		return m_support_formats[index].texture;
+	case GRT_FRAME_BUFFER:
+		return m_support_formats[index].framebuffer;
+	case GRT_VERTEX_BUFFER:
+		return m_support_formats[index].buffer;
+	case GRT_INDEX_BUFFER:
+		return m_support_formats[index].index;
+	case GRT_DISPLAY:
+		return m_support_formats[index].display;
+	default:
+		break;
+	}
+	return false;
+}
+
+
+//---------------------------------------------------------------------
 // calculate texture size
 //---------------------------------------------------------------------
 bool VideoDriver::TextureFit(int w, int h, PixelFormat fmt, int *tw, int *th)

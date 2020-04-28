@@ -44,6 +44,7 @@ enum PixelFormat
 	FMT_A4R4G4B4,
 	FMT_R5G6B5,
 	FMT_G8,
+	FMT_UNKNOWN,
 };
 
 

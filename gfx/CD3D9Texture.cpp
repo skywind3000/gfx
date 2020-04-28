@@ -47,6 +47,9 @@ D3DFORMAT CD3D9Texture::GetD3DFormat(PixelFormat fmt)
 		case FMT_G8:
 			f = D3DFMT_L8;
 			break;
+		default:
+			f = D3DFMT_UNKNOWN;
+			break;
 	}
 	return f;
 }
@@ -115,12 +118,16 @@ int CD3D9Texture::Create(CD3D9Driver *drv, const Image *image, int flag, int mip
 
 
 //---------------------------------------------------------------------
-// 
+// create from file
 //---------------------------------------------------------------------
 int CD3D9Texture::Create(CD3D9Driver *drv, const char *filename, int flag, int mipmap)
 {
 	GFX::Image *img = Win32::GdiPlus_LoadFile(filename);
-	if (img == NULL) return -1;
+	if (img == NULL) {
+		// printf("Load failed\n");
+		return -1;
+	}
+	// printf("fmt=%d bpp=%d\n", (int)img->GetFormat(), (int)img->GetBpp());
 	int hr = Create(drv, img, flag, mipmap);
 	delete img;
 	return hr;

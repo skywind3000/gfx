@@ -9,6 +9,7 @@
 #define _GFX_DRIVER_H_
 
 #include "GFX.h"
+#include "GFXTypes.h"
 #include "GFXColor.h"
 #include "GFXImage.h"
 
@@ -50,6 +51,34 @@ struct VideoCapacity
 
 
 //---------------------------------------------------------------------
+// supported formats
+//---------------------------------------------------------------------
+struct SupportFormat
+{
+	bool texture;        // support for texture ?
+	bool buffer;         // support for depth/stencil buffer ?
+	bool index;          // support for index buffer
+	bool framebuffer;    // support for framebuffer ?
+	bool display;        // support for display ?
+};
+
+
+//---------------------------------------------------------------------
+// Resource
+//---------------------------------------------------------------------
+enum ResourceType
+{
+	GRT_TEXTURE = 0,
+	GRT_FRAME_BUFFER,
+	GRT_VERTEX_BUFFER,
+	GRT_INDEX_BUFFER,
+	GRT_SHADER,
+	GRT_UNIFORM,
+	GRT_DISPLAY,
+};
+
+
+//---------------------------------------------------------------------
 // VideoDriver
 //---------------------------------------------------------------------
 class VideoDriver
@@ -75,8 +104,12 @@ public:
 
 	virtual void SetColor(Core::Color color);
 
+public:
+
 	// fit texture size
 	virtual bool TextureFit(int w, int h, PixelFormat fmt, int *tw, int *th);
+
+	virtual bool CheckDeviceFormat(PixelFormat fmt, ResourceType rt);
 
 public:
 	inline bool IsTextureSquareOnly() const { return m_video_capacity.texture_square_only; }
@@ -98,10 +131,14 @@ public:
 protected:
 	void InitSize(int width, int height);
 
+	void AddDeviceFormat(PixelFormat fmt, ResourceType rt);
+
 protected:
 	CreationParameter m_creation_parameter;
 	VideoCapacity m_video_capacity;
 	Core::Color m_background_color;
+	std::vector<SupportFormat> m_support_formats;
+	int m_device_id;
 	int m_video_width;
 	int m_video_height;
 	float m_inv_width;

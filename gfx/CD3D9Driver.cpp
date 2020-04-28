@@ -16,6 +16,88 @@ NAMESPACE_BEGIN(GFX);
 
 
 //---------------------------------------------------------------------
+// formats
+//---------------------------------------------------------------------
+
+struct FORMAT_INFO {
+	D3DFORMAT fmt;
+	const char *text;
+};
+
+// texture formats
+FORMAT_INFO FORMAT_TEXTURE[] = {
+	{ D3DFMT_A8R8G8B8,      "D3DFMT_A8R8G8B8" },
+	{ D3DFMT_X8R8G8B8,      "D3DFMT_X8R8G8B8" },
+	{ D3DFMT_R5G6B5,        "D3DFMT_R5G6B5" },
+	{ D3DFMT_X1R5G5B5,      "D3DFMT_X1R5G5B5" },
+	{ D3DFMT_A1R5G5B5,      "D3DFMT_A1R5G5B5" },
+	{ D3DFMT_A4R4G4B4,      "D3DFMT_A4R4G4B4" },
+	{ D3DFMT_R3G3B2,        "D3DFMT_R3G3B2" },
+	{ D3DFMT_A8,            "D3DFMT_A8" },
+	{ D3DFMT_A8R3G3B2,      "D3DFMT_A8R3G3B2" },
+	{ D3DFMT_X4R4G4B4,      "D3DFMT_X4R4G4B4" },
+	{ D3DFMT_A2B10G10R10,   "D3DFMT_A2B10G10R10" },
+	{ D3DFMT_A8B8G8R8,      "D3DFMT_A8B8G8R8" },
+	{ D3DFMT_X8B8G8R8,      "D3DFMT_X8B8G8R8" },
+	{ D3DFMT_G16R16,        "D3DFMT_G16R16" },
+	{ D3DFMT_A2R10G10B10,   "D3DFMT_A2R10G10B10" },
+	{ D3DFMT_A16B16G16R16,  "D3DFMT_A16B16G16R16" },
+	{ D3DFMT_A8P8,          "D3DFMT_A8P8" },
+	{ D3DFMT_P8,            "D3DFMT_P8" },
+	{ D3DFMT_L8,            "D3DFMT_L8" },
+	{ D3DFMT_L16,           "D3DFMT_L16" },
+	{ D3DFMT_A8L8,          "D3DFMT_A8L8" },
+	{ D3DFMT_A4L4,          "D3DFMT_A4L4" },
+	{ D3DFMT_V8U8,          "D3DFMT_V8U8" },
+	{ D3DFMT_Q8W8V8U8,      "D3DFMT_Q8W8V8U8" },
+	{ D3DFMT_V16U16,        "D3DFMT_V16U16" },
+	{ D3DFMT_Q16W16V16U16,  "D3DFMT_Q16W16V16U16" },
+	{ D3DFMT_CxV8U8,        "D3DFMT_CxV8U8" },
+	{ D3DFMT_L6V5U5,        "D3DFMT_L6V5U5" },
+	{ D3DFMT_X8L8V8U8,      "D3DFMT_X8L8V8U8" },
+	{ D3DFMT_A2W10V10U10,   "D3DFMT_A2W10V10U10" },
+	{ D3DFMT_DXT1,          "D3DFMT_DXT1" },
+	{ D3DFMT_DXT2,          "D3DFMT_DXT2" },
+	{ D3DFMT_DXT3,          "D3DFMT_DXT3" },
+	{ D3DFMT_DXT4,          "D3DFMT_DXT4" },
+	{ D3DFMT_DXT5,          "D3DFMT_DXT5" },
+	{ D3DFMT_UYVY,          "D3DFMT_UYVY" },
+	{ D3DFMT_YUY2,          "D3DFMT_YUY2" },
+	{ D3DFMT_UNKNOWN,       "D3DFMT_UNKNOWN" },
+};
+
+// depth, stencil, vertex, 
+FORMAT_INFO FORMAT_BUFFER[] = {
+	{ D3DFMT_D16_LOCKABLE,    "D3DFMT_D16_LOCKABLE" },
+	{ D3DFMT_D32,             "D3DFMT_D32" },
+	{ D3DFMT_D15S1,           "D3DFMT_D15S1" },
+	{ D3DFMT_D24S8,           "D3DFMT_D24S8" },
+	{ D3DFMT_D24X8,           "D3DFMT_D24X8" },
+	{ D3DFMT_D24X4S4,         "D3DFMT_D24X4S4" },
+	{ D3DFMT_D32F_LOCKABLE,   "D3DFMT_D32F_LOCKABLE" },
+	{ D3DFMT_D24FS8,          "D3DFMT_D24FS8" },
+	{ D3DFMT_D16,             "D3DFMT_D16" },
+	{ D3DFMT_VERTEXDATA,      "D3DFMT_VERTEXDATA" },
+	{ D3DFMT_INDEX16,         "D3DFMT_INDEX16" },
+	{ D3DFMT_INDEX32,         "D3DFMT_INDEX32" },
+	{ D3DFMT_UNKNOWN,         "D3DFMT_UNKNOWN" },
+};
+
+// format map
+struct { PixelFormat pfmt; D3DFORMAT fmt; } FORMAT_MAP[] = {
+	{ FMT_A8R8G8B8, D3DFMT_A8R8G8B8 },
+	{ FMT_A8B8G8R8, D3DFMT_A8B8G8R8 },
+	{ FMT_X8R8G8B8, D3DFMT_X8R8G8B8 },
+	{ FMT_R8G8B8,   D3DFMT_R8G8B8 },
+	{ FMT_A1R5G5B5, D3DFMT_A1R5G5B5 },
+	{ FMT_A4R4G4B4, D3DFMT_A4R4G4B4 },
+	{ FMT_R5G6B5,   D3DFMT_R5G6B5 },
+	{ FMT_G8,       D3DFMT_L8 },
+	{ FMT_UNKNOWN,  D3DFMT_UNKNOWN },
+};
+
+
+//---------------------------------------------------------------------
 // ctor
 //---------------------------------------------------------------------
 CD3D9Driver::CD3D9Driver(): VideoDriver()
@@ -95,6 +177,30 @@ int CD3D9Driver::Release()
 	m_assignment = FALSE;
 	m_pool = D3DPOOL_DEFAULT;
 	return 0;
+}
+
+
+//---------------------------------------------------------------------
+// format map
+//---------------------------------------------------------------------
+D3DFORMAT CD3D9Driver::FormatMap(PixelFormat pfmt)
+{
+	for (int i = 0; FORMAT_MAP[i].pfmt != FMT_UNKNOWN; i++) {
+		if (FORMAT_MAP[i].pfmt == pfmt) return FORMAT_MAP[i].fmt;
+	}
+	return D3DFMT_UNKNOWN;
+}
+
+
+//---------------------------------------------------------------------
+// format map
+//---------------------------------------------------------------------
+PixelFormat CD3D9Driver::FormatMap(D3DFORMAT fmt)
+{
+	for (int i = 0; FORMAT_MAP[i].pfmt != FMT_UNKNOWN; i++) {
+		if (FORMAT_MAP[i].fmt == fmt) return FORMAT_MAP[i].pfmt;
+	}
+	return FMT_UNKNOWN;
 }
 
 
@@ -190,6 +296,7 @@ int CD3D9Driver::Create(const CreationParameter *params)
 					&m_params,
 					&m_device);
 			if (SUCCEEDED(hr)) {
+				m_device_type = deviceType;
 				break;
 			}
 		}
@@ -200,6 +307,7 @@ int CD3D9Driver::Create(const CreationParameter *params)
 		return -3;
 	}
 
+	m_device_id = adapter;
 	hr = m_device->GetDeviceCaps(&m_caps);
 
 	if (FAILED(hr)) {
@@ -304,6 +412,31 @@ bool CD3D9Driver::GetDeviceInfo()
 
 	m_video_capacity.texture_max_width = (int)m_caps.MaxTextureWidth;
 	m_video_capacity.texture_max_height = (int)m_caps.MaxTextureHeight;
+
+	m_fmt_texture.resize(0);
+	m_fmt_buffer.resize(0);
+
+	for (int i = 0; FORMAT_TEXTURE[i].fmt != D3DFMT_UNKNOWN; i++) {
+		D3DFORMAT fmt = FORMAT_TEXTURE[i].fmt;
+		HRESULT hr = m_d3d9->CheckDeviceFormat(m_device_id, m_device_type, 
+				m_params.BackBufferFormat, 0, D3DRTYPE_TEXTURE, fmt);
+		if (SUCCEEDED(hr)) {
+			PixelFormat pfmt = FormatMap(fmt);
+			if (pfmt != FMT_UNKNOWN) {
+				AddDeviceFormat(pfmt, GRT_TEXTURE);
+				// printf("texture: %s OK\n", FORMAT_TEXTURE[i].text);
+			}
+		}
+		hr = m_d3d9->CheckDeviceFormat(m_device_id, m_device_type, 
+				m_params.BackBufferFormat, 0, D3DRTYPE_SURFACE, fmt);
+		if (SUCCEEDED(hr)) {
+			PixelFormat pfmt = FormatMap(fmt);
+			if (pfmt != FMT_UNKNOWN) {
+				AddDeviceFormat(pfmt, GRT_FRAME_BUFFER);
+				// printf("surface: %s OK\n", FORMAT_TEXTURE[i].text);
+			}
+		}
+	}
 
 	return true;
 }

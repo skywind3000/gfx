@@ -337,6 +337,12 @@ void* GdiPlus_LoadCore(const void *data, long size, int *cx, int *cy,
 		fmt = 8888,
 		nbytes = 4;
 
+#if 1
+	gpixfmt = GPixelFormat32bppARGB;
+	fmt = 8888;
+	nbytes = 4;
+#endif
+
 	if (bpp) bpp[0] = nbytes * 8;
 	if (pfmt) pfmt[0] = fmt;
 

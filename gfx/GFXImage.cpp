@@ -36,6 +36,8 @@ int Image::FormatToBpp(PixelFormat fmt)
 		return 16;
 	case FMT_G8:
 		return 8;
+	default:
+		return 0;
 	}
 	return 32;
 }

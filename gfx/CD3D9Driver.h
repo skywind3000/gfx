@@ -65,6 +65,9 @@ public:
 	HRESULT SetTransform(D3DTRANSFORMSTATETYPE state, const D3DMATRIX *pMatrix);
 	HRESULT SetTransform(D3DTRANSFORMSTATETYPE state, const Core::Matrix4& matrix);
 
+	D3DFORMAT FormatMap(PixelFormat pfmt);
+	PixelFormat FormatMap(D3DFORMAT fmt);
+
 protected:
 
 	static int CreateInterfaceD3D9(IDirect3D9** d3d9);
@@ -74,12 +77,15 @@ protected:
 
 protected:
 	D3DPOOL m_pool;
+	std::vector<D3DFORMAT> m_fmt_texture;
+	std::vector<D3DFORMAT> m_fmt_buffer;
 
 protected:
 	HWND m_hwnd;
 	BOOL m_assignment;
 	IDirect3D9 *m_d3d9;
 	IDirect3DDevice9 *m_device;
+	D3DDEVTYPE m_device_type;
 	D3DADAPTER_IDENTIFIER9 m_identifier;
 	D3DPRESENT_PARAMETERS m_params;
 	D3DCAPS9 m_caps;
