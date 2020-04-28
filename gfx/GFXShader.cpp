@@ -1,17 +1,13 @@
 //=====================================================================
 //
-// GFXShader.h - 
+// GFXShader.cpp - 
 //
-// Last Modified: 2020/04/28 12:09:50
+// Last Modified: 2020/04/28 12:11:51
 //
 //=====================================================================
-#ifndef _GFX_SHADER_H_
-#define _GFX_SHADER_H_
 
-#include "GFX.h"
-#include "GFXTypes.h"
-#include "GFXUtil.h"
-#include "GFXDriver.h"
+#include "GFXShader.h"
+
 
 
 //---------------------------------------------------------------------
@@ -21,48 +17,45 @@ NAMESPACE_BEGIN(GFX);
 
 
 //---------------------------------------------------------------------
-// ShaderMode
+// ctor
 //---------------------------------------------------------------------
-enum ShaderMode {
-	GSM_VERTEX_SHADER = 0,
-	GSM_PIXEL_SHADER,
-	GSM_GEOMETRY_SHADER,
-	GSM_COMPUTER_SHADER,
-	GSM_TESSELLATION_SHADER,
-	GSM_UNKNOWN,
-};
-
-
-//---------------------------------------------------------------------
-// CShaderProgram
-//---------------------------------------------------------------------
-class CShaderProgram
+CShaderProgram::CShaderProgram()
 {
-public:
-	virtual ~CShaderProgram();
-	CShaderProgram();
+	m_mode = GSM_UNKNOWN;
+	m_error_message = "";
+}
 
-public:
-	virtual bool BeginShader();
-	virtual bool EndShader();
 
-public:
-	inline ShaderMode GetMode() const { return m_mode; }
-	inline std::string GetErrorMessage() const { return m_error_message; }
+//---------------------------------------------------------------------
+// dtor
+//---------------------------------------------------------------------
+CShaderProgram::~CShaderProgram()
+{
+}
 
-protected:
-	std::string m_error_message;
-	ShaderMode m_mode;
-};
+
+//---------------------------------------------------------------------
+// begin
+//---------------------------------------------------------------------
+bool CShaderProgram::BeginShader()
+{
+	return false;
+}
+
+
+//---------------------------------------------------------------------
+// end
+//---------------------------------------------------------------------
+bool CShaderProgram::EndShader()
+{
+	return false;
+}
 
 
 //---------------------------------------------------------------------
 // Namespace End
 //---------------------------------------------------------------------
 NAMESPACE_END(GFX);
-
-
-#endif
 
 
 
