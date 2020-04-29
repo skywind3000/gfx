@@ -582,6 +582,17 @@ HRESULT CD3D9Driver::SetRenderTarget(DWORD RenderTargetIndex, IDirect3DSurface9 
 }
 
 
+//---------------------------------------------------------------------
+// get render target
+//---------------------------------------------------------------------
+HRESULT CD3D9Driver::GetRenderTarget(DWORD RenderTargetIndex, IDirect3DSurface9 **ppRenderTarget)
+{
+	if (m_device == NULL) {
+		return D3DERR_DEVICEREMOVED;
+	}
+	return m_device->GetRenderTarget(RenderTargetIndex, ppRenderTarget);
+}
+
 
 //---------------------------------------------------------------------
 // Namespace End

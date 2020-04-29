@@ -70,6 +70,8 @@ void Transform::Reset()
 	m_view = Matrix4Unit;
 	m_projection = Matrix4Unit;
 	m_mvp = Matrix4Unit;
+	m_mv = Matrix4Unit;
+	m_vp = Matrix4Unit;
 	m_dirty = false;
 }
 
@@ -130,12 +132,14 @@ void Transform::UpdateMvp()
 		mvp *= Matrix4GL2DX;
 	}
 	m_mvp = mvp;
+	m_mv = m_world * m_view;
+	m_vp = m_view * m_projection;
 	m_dirty = false;
 }
 
 
 //---------------------------------------------------------------------
-// Get Matrix
+// Get World * View * Projection
 //---------------------------------------------------------------------
 Matrix4* Transform::GetMvp()
 {
@@ -146,6 +150,36 @@ Matrix4* Transform::GetMvp()
 		}
 	}
 	return &m_mvp;
+}
+
+
+//---------------------------------------------------------------------
+// Get World * View
+//---------------------------------------------------------------------
+Matrix4* Transform::GetMv()
+{
+	if (m_dirty) {
+		if (m_update) {
+			UpdateMvp();
+			m_dirty = true;
+		}
+	}
+	return &m_mv;
+}
+
+
+//---------------------------------------------------------------------
+// Get View * Projection
+//---------------------------------------------------------------------
+Matrix4* Transform::GetVp()
+{
+	if (m_dirty) {
+		if (m_update) {
+			UpdateMvp();
+			m_dirty = true;
+		}
+	}
+	return &m_vp;
 }
 
 

@@ -60,6 +60,8 @@ public:
 	void UpdateMvp();
 
 	Matrix4* GetMvp();
+	Matrix4* GetMv();
+	Matrix4* GetVp();
 
 	void SetMvp(const Matrix4 *matrix);
 
@@ -73,6 +75,8 @@ protected:
 	Matrix4 m_view;
 	Matrix4 m_projection;
 	Matrix4 m_mvp;
+	Matrix4 m_mv;
+	Matrix4 m_vp;
 };
 
 

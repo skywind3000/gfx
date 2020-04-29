@@ -42,12 +42,16 @@ public:
 
 	inline IDirect3DTexture9 *GetD3DTexture() { return m_texture; }
 
+	IDirect3DSurface9 *FetchSurface();
+	void ReleaseSurface();
+
 	static D3DFORMAT GetD3DFormat(PixelFormat fmt);
 
 protected:
 	int CreateTexture(IDirect3DDevice9 *device, int w, int h, PixelFormat fmt, int flag, int mipmap);
 
 protected:
+	IDirect3DSurface9 *m_surface;
 	IDirect3DTexture9 *m_texture;
 	IDirect3DDevice9 *m_device;
 };

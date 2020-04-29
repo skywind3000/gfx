@@ -62,6 +62,7 @@ CD3D9Texture::CD3D9Texture()
 {
 	m_texture = NULL;
 	m_device = NULL;
+	m_surface = NULL;
 }
 
 
@@ -79,6 +80,10 @@ CD3D9Texture::~CD3D9Texture()
 //---------------------------------------------------------------------
 int CD3D9Texture::Release()
 {
+	if (m_surface) {
+		m_surface->Release();
+		m_surface = NULL;
+	}
 	if (m_texture) {
 		m_texture->Release();
 		m_texture = NULL;
@@ -142,8 +147,13 @@ int CD3D9Texture::CreateTexture(IDirect3DDevice9 *device, int w, int h,
 {
 	D3DFORMAT d3d_fmt = GetD3DFormat(fmt);
 	DWORD usage = 0;
+	D3DPOOL pool = D3DPOOL_MANAGED;
 	m_texture = NULL;
-	HRESULT hr = device->CreateTexture(w, h, mipmap, usage, d3d_fmt, D3DPOOL_MANAGED, &m_texture, NULL);
+	if (flag == 0xffff) {
+		usage = D3DUSAGE_RENDERTARGET;
+		pool = D3DPOOL_DEFAULT;
+	}
+	HRESULT hr = device->CreateTexture(w, h, mipmap, usage, d3d_fmt, pool, &m_texture, NULL);
 	if (SUCCEEDED(hr)) {
 		InitParameter(w, h, fmt);
 		device->AddRef();
@@ -196,6 +206,34 @@ void CD3D9Texture::Unlock()
 	}
 	m_bits = NULL;
 	m_pitch = 0;
+}
+
+
+//---------------------------------------------------------------------
+// 
+//---------------------------------------------------------------------
+IDirect3DSurface9* CD3D9Texture::FetchSurface()
+{
+	if (m_texture == NULL) return NULL;
+	if (m_surface) return m_surface;
+	HRESULT hr = m_texture->GetSurfaceLevel(0, &m_surface);
+	if (FAILED(hr)) {
+		m_surface = NULL;
+		return NULL;
+	}
+	return m_surface;
+}
+
+
+//---------------------------------------------------------------------
+// 
+//---------------------------------------------------------------------
+void CD3D9Texture::ReleaseSurface()
+{
+	if (m_surface) {
+		m_surface->Release();
+		m_surface = NULL;
+	}
 }
 
 
