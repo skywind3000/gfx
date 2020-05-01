@@ -9,6 +9,7 @@
 #define _GFX_TEXTURE_H_
 
 #include "GFX.h"
+#include "GFXTypes.h"
 #include "GFXImage.h"
 
 
@@ -31,44 +32,54 @@ public:
 
 public:
 
-	void InitParameter(int w, int h, PixelFormat fmt);
-
-	virtual void *Lock(bool readOnly = false);
-	virtual void Unlock();
+	virtual bool UpdateTexture(int mip, const Rect *rect, const void *bits, int pitch);
+	virtual bool ReadTexture(int mip, const Rect *rect, void *bits, int pitch);
 
 	virtual int PreReset();
 	virtual int PostReset();
 
-	virtual void CopyTo(int x, int y, Image *src, int sx, int sy, int sw, int sh);
-	virtual void CopyFrom(int x, int y, const Image *src, int sx, int sy, int sw, int sh);
+	virtual void *Lock(int mip, const Rect *rect, bool readOnly = false);
+	virtual void Unlock(int mip);
+
+	virtual void CopyTo(int mip, int x, int y, Image *src, int sx, int sy, int sw, int sh);
+	virtual void CopyFrom(int mip, int x, int y, const Image *src, int sx, int sy, int sw, int sh);
 	virtual void CopyFrom(int x, int y, Texture *src, int sx, int sy, int sw, int sh);
 
-	virtual void SaveToImage(Image *img);
-	virtual void RestoreFromImage(const Image *img);
+	virtual void SaveToImage(int mip, Image *img);
+	virtual void RestoreFromImage(int mip, const Image *img);
 
 	inline virtual bool Available() const { return false; }
 
 	inline int GetWidth() const { return m_width; }
 	inline int GetHeight() const { return m_height; }
 	inline PixelFormat GetFormat() const { return m_format; }
-	inline int32_t GetPitch() const { return m_pitch; }
 	inline int GetBpp() const { return m_bpp; }
-	
+
 	inline float GetInvWidth() const { return m_inv_width; }
 	inline float GetInvHeight() const { return m_inv_height; }
 
-	inline void* GetBits() { return m_bits; }
-	inline const void* GetBits() const { return m_bits; }
+	inline bool IsLockable() const { return m_lockable; }
+	inline int32_t LockedPitch() const { return m_locked_pitch; }
+	inline void* LockedBits() { return m_locked_bits; }
+	inline const void* LockedBits() const { return m_locked_bits; }
+	inline int LockedWidth() const { return m_locked_w; }
+	inline int LockedHeight() const { return m_locked_h; }
 
 protected:
+	void InitParameter(int w, int h, PixelFormat fmt, bool lockable);
+
+protected:
+	PixelFormat m_format;
+	int m_bpp;
 	int m_width;
 	int m_height;
 	float m_inv_width;
 	float m_inv_height;
-	int32_t m_pitch;
-	void *m_bits;
-	int m_bpp;
-	PixelFormat m_format;
+	bool m_lockable;
+	int m_locked_w;
+	int m_locked_h;
+	uint8_t *m_locked_bits;
+	int32_t m_locked_pitch;
 };
 
 
