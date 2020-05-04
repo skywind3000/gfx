@@ -39,6 +39,7 @@ void Texture::InitParameter(int w, int h, PixelFormat fmt, bool lockable)
 	m_width = w;
 	m_height = h;
 	m_format = fmt;
+	m_levels = 0;
 	m_locked_pitch = 0;
 	m_locked_bits = NULL;
 	m_locked_w = -1;
@@ -51,18 +52,50 @@ void Texture::InitParameter(int w, int h, PixelFormat fmt, bool lockable)
 
 
 //---------------------------------------------------------------------
+// get level
+//---------------------------------------------------------------------
+int Texture::GetLevelWidth(int level) const
+{
+	if (level < 0 || level >= m_levels) return 0;
+	int x = m_width >> level;
+	return (x < 1)? 1 : x;
+}
+
+
+//---------------------------------------------------------------------
+// 
+//---------------------------------------------------------------------
+int Texture::GetLevelHeight(int level) const
+{
+	if (level < 0 || level >= m_levels) return 0;
+	int x = m_height >> level;
+	return (x < 1)? 1 : x;
+}
+
+
+//---------------------------------------------------------------------
 // update rect
 //---------------------------------------------------------------------
 bool Texture::UpdateTexture(int mip, const Rect *rect, const void *bits, int pitch)
 {
 	if (m_lockable && m_locked_bits == NULL) {
 		const uint8_t *src = reinterpret_cast<const uint8_t*>(bits);
+		Rect rc;
+		if (rect == NULL) {
+			rc.left = 0;
+			rc.top = 0;
+			rc.right = GetLevelWidth(mip);
+			rc.bottom = GetLevelHeight(mip);
+			rect = &rc;
+		}
 		if (Lock(mip, rect, false) == NULL) {
 			return false;
 		}
 		uint8_t *dst = m_locked_bits;
-		int size = (m_bpp / 8) * m_locked_w;
-		for (int j = 0; j < m_locked_h; j++) {
+		int w = rect->right - rect->left;
+		int h = rect->bottom - rect->top;
+		int size = (m_bpp / 8) * w;
+		for (int j = 0; j < h; j++) {
 			memcpy(dst, src, size);
 			dst += m_locked_pitch;
 			src += pitch;
@@ -82,12 +115,22 @@ bool Texture::ReadTexture(int mip, const Rect *rect, void *bits, int pitch)
 {
 	if (m_lockable && m_locked_bits == NULL) {
 		uint8_t *dst = reinterpret_cast<uint8_t*>(bits);
+		Rect rc;
+		if (rect == NULL) {
+			rc.left = 0;
+			rc.top = 0;
+			rc.right = GetLevelWidth(mip);
+			rc.bottom = GetLevelHeight(mip);
+			rect = &rc;
+		}
 		if (Lock(mip, rect, true) == NULL) {
 			return false;
 		}
 		const uint8_t *src = m_locked_bits;
-		int size = (m_bpp / 8) * m_locked_w;
-		for (int j = 0; j < m_locked_h; j++) {
+		int w = rect->right - rect->left;
+		int h = rect->bottom - rect->top;
+		int size = (m_bpp / 8) * w;
+		for (int j = 0; j < h; j++) {
 			memcpy(dst, src, size);
 			dst += pitch;
 			src += m_locked_pitch;

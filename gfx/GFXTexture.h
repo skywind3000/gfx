@@ -11,6 +11,7 @@
 #include "GFX.h"
 #include "GFXTypes.h"
 #include "GFXImage.h"
+#include "GFXMath.h"
 
 
 //---------------------------------------------------------------------
@@ -48,6 +49,9 @@ public:
 	virtual void SaveToImage(int mip, Image *img);
 	virtual void RestoreFromImage(int mip, const Image *img);
 
+	virtual int GetLevelWidth(int level) const;
+	virtual int GetLevelHeight(int level) const;
+
 	inline virtual bool Available() const { return false; }
 
 	inline int GetWidth() const { return m_width; }
@@ -73,6 +77,7 @@ protected:
 	int m_bpp;
 	int m_width;
 	int m_height;
+	int m_levels;
 	float m_inv_width;
 	float m_inv_height;
 	bool m_lockable;
