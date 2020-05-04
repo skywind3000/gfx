@@ -18,7 +18,7 @@ NAMESPACE_BEGIN(GFX);
 //---------------------------------------------------------------------
 Texture::Texture()
 {
-	InitParameter(0, 0, FMT_A8R8G8B8, true);
+	InitSize(0, 0, FMT_A8R8G8B8, true);
 }
 
 
@@ -34,7 +34,7 @@ Texture::~Texture()
 //---------------------------------------------------------------------
 // init parameters
 //---------------------------------------------------------------------
-void Texture::InitParameter(int w, int h, PixelFormat fmt, bool lockable)
+void Texture::InitSize(int w, int h, PixelFormat fmt, bool lockable)
 {
 	m_width = w;
 	m_height = h;
@@ -88,10 +88,11 @@ bool Texture::UpdateTexture(int mip, const Rect *rect, const void *bits, int pit
 			rc.bottom = GetLevelHeight(mip);
 			rect = &rc;
 		}
-		if (Lock(mip, rect, false) == NULL) {
+		void *bits = Lock(mip, rect, false);
+		if (bits == NULL) {
 			return false;
 		}
-		uint8_t *dst = m_locked_bits;
+		uint8_t *dst = (uint8_t*)bits;
 		int w = rect->right - rect->left;
 		int h = rect->bottom - rect->top;
 		int size = (m_bpp / 8) * w;
@@ -123,10 +124,11 @@ bool Texture::ReadTexture(int mip, const Rect *rect, void *bits, int pitch)
 			rc.bottom = GetLevelHeight(mip);
 			rect = &rc;
 		}
-		if (Lock(mip, rect, true) == NULL) {
+		void *bits = Lock(mip, rect, true);
+		if (bits == NULL) {
 			return false;
 		}
-		const uint8_t *src = m_locked_bits;
+		const uint8_t *src = (const uint8_t*)bits;
 		int w = rect->right - rect->left;
 		int h = rect->bottom - rect->top;
 		int size = (m_bpp / 8) * w;

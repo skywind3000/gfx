@@ -70,7 +70,7 @@ public:
 	inline int LockedHeight() const { return m_locked_h; }
 
 protected:
-	void InitParameter(int w, int h, PixelFormat fmt, bool lockable);
+	void InitSize(int w, int h, PixelFormat fmt, bool lockable);
 
 protected:
 	PixelFormat m_format;

@@ -35,8 +35,8 @@ public:
 	virtual int Create(CD3D9Driver *drv, const char *filename, int flag, int mipmap = 1);
 	virtual int Release();
 
-	virtual void *Lock(bool readOnly = false);
-	virtual void Unlock();
+	virtual void *Lock(int mip, const Rect *rect, bool readOnly = false);
+	virtual void Unlock(int mip);
 
 	inline bool Available() const { return m_texture? true : false; }
 

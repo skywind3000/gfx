@@ -116,7 +116,7 @@ int CD3D9Texture::Create(CD3D9Driver *drv, const Image *image, int flag, int mip
 	int hr = CreateTexture(drv->GetDevice(), image->GetWidth(), image->GetHeight(),
 			image->GetFormat(), flag, mipmap);
 	if (hr == 0) {
-		this->RestoreFromImage(image);
+		this->RestoreFromImage(0, image);
 	}
 	return hr;
 }
@@ -155,16 +155,17 @@ int CD3D9Texture::CreateTexture(IDirect3DDevice9 *device, int w, int h,
 	}
 	HRESULT hr = device->CreateTexture(w, h, mipmap, usage, d3d_fmt, pool, &m_texture, NULL);
 	if (SUCCEEDED(hr)) {
-		InitParameter(w, h, fmt);
+		InitSize(w, h, fmt, true);
 		device->AddRef();
 		m_device = device;
+		m_levels = m_texture->GetLevelCount();
 	}
 	else {
 		m_texture = NULL;
 		return -1;
 	}
-	m_pitch = 0;
-	m_bits = NULL;
+	m_locked_pitch = 0;
+	m_locked_bits = NULL;
 	return 0;
 }
 
@@ -172,40 +173,58 @@ int CD3D9Texture::CreateTexture(IDirect3DDevice9 *device, int w, int h,
 //---------------------------------------------------------------------
 // lock
 //---------------------------------------------------------------------
-void* CD3D9Texture::Lock(bool readOnly)
+void* CD3D9Texture::Lock(int mip, const Rect *rect, bool readOnly)
 {
 	if (m_texture == NULL) {
 		return NULL;
 	}
 
-	if (m_bits) {
-		return m_bits;
+	if (m_locked_bits) {
+		return m_locked_bits;
 	}
 
-	D3DLOCKED_RECT rect;
-	HRESULT hr = m_texture->LockRect(0, &rect, 0, 0);
+	RECT rc;
+
+	if (rect == NULL) {
+		rc.left = 0;
+		rc.top = 0;
+		rc.right = GetLevelWidth(mip);
+		rc.bottom = GetLevelHeight(mip);
+	}
+	else {
+		rc.left = rect->left;
+		rc.top = rect->top;
+		rc.right = rect->right;
+		rc.bottom = rect->bottom;
+	}
+
+	D3DLOCKED_RECT locked;
+	HRESULT hr = m_texture->LockRect(mip, &locked, &rc, 
+			readOnly? D3DLOCK_READONLY : 0);
 
 	if (SUCCEEDED(hr)) {
-		m_pitch = (int32_t)rect.Pitch;
-		m_bits = rect.pBits;
+		m_locked_pitch = (int32_t)locked.Pitch;
+		m_locked_bits = (uint8_t*)locked.pBits;
+		m_locked_w = rc.right - rc.left;
+		m_locked_h = rc.bottom - rc.top;
 	}
 
-	return m_bits;
+	return m_locked_bits;
 }
 
 
 //---------------------------------------------------------------------
 // unlock
 //---------------------------------------------------------------------
-void CD3D9Texture::Unlock()
+void CD3D9Texture::Unlock(int mip)
 {
 	if (m_texture) {
-		if (m_bits) {
-			m_texture->UnlockRect(0);
+		if (m_locked_bits) {
+			m_texture->UnlockRect(mip);
 		}
 	}
-	m_bits = NULL;
-	m_pitch = 0;
+	m_locked_bits = NULL;
+	m_locked_pitch = 0;
 }
 
 
